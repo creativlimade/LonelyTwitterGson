@@ -4,16 +4,21 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import android.app.Activity;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import ca.ualberta.cs.lonelytwitter.data.FileDataManager;
+import ca.ualberta.cs.lonelytwitter.data.GsonFileDataManager;
 import ca.ualberta.cs.lonelytwitter.data.IDataManager;
 
 public class LonelyTwitterActivity extends Activity {
 
+	public Button button0 ;
+	
 	private IDataManager dataManager;
 
 	private EditText bodyText;
@@ -31,7 +36,7 @@ public class LonelyTwitterActivity extends Activity {
 
 		setContentView(R.layout.main);
 
-		dataManager = new FileDataManager(this);
+		dataManager = new GsonFileDataManager(this);
 
 		bodyText = (EditText) findViewById(R.id.body);
 		oldTweetsList = (ListView) findViewById(R.id.oldTweetsList);
@@ -45,6 +50,10 @@ public class LonelyTwitterActivity extends Activity {
 		tweetsViewAdapter = new ArrayAdapter<Tweet>(this,
 				R.layout.list_item, tweets);
 		oldTweetsList.setAdapter(tweetsViewAdapter);
+		
+		button0 = button(OnClickListener(R.id.summary));
+		
+		
 	}
 
 	public void save(View v) {
@@ -65,6 +74,14 @@ public class LonelyTwitterActivity extends Activity {
 		tweets.clear();
 		tweetsViewAdapter.notifyDataSetChanged();
 		dataManager.saveTweets(tweets);
+	}
+	
+	public void to_summary(View v) {
+		Intent intent = new Intent(LonelyTwitterActivity.this, Summary.class);
+		Bundle bundle = new Bundle();
+		bundle.putSerializable("Bundle", tweets);
+		intent.putExtras(bundle);
+		startActivity(intent);
 	}
 
 }
